@@ -38,7 +38,6 @@ public class MainActivity extends Activity {
 
     private MediaPlayer mMediaPlayer = new MediaPlayer();
     private Equalizer mEqualizer;
-    int band1, band2, band3, band4, band5, band6, band7;
 
     /** Called when the activity is first created. */
     @Override
@@ -73,31 +72,33 @@ public class MainActivity extends Activity {
         mMediaPlayer = null;
     }
 
+    public void EQ(int sessionId)
+    {
+        mEqualizer = new Equalizer(0, sessionId);
+        mEqualizer.setEnabled(true);
+    }
+
+    public void getEQ()
+    {
+        short bands = mEqualizer.getNumberOfBands();
+
+        for (short i = 0; i < bands; i++)
+        {
+            Log.w("Band",""+mEqualizer.getBandLevel(i));
+        }
+    }
+
     public void playMusic(Uri uri) {
         try {
             mMediaPlayer.reset();
             mMediaPlayer.setDataSource(this, uri);
             mMediaPlayer.prepare();
             mMediaPlayer.start();
-            int sessionId = mMediaPlayer.getAudioSessionId();
-            try {
-                mEqualizer = null;
-                mEqualizer = new Equalizer(0, sessionId );
-                mEqualizer.setEnabled(true);
-            } catch (UnsupportedOperationException e) {
-                e.printStackTrace();
-            }
-            band1 = mEqualizer.getBand(40);
-            band2 = mEqualizer.getBand(100);
-            band3 = mEqualizer.getBand(200);
-            band4 = mEqualizer.getBand(2000);
-            band5 = mEqualizer.getBand(9000);
-            band6 = mEqualizer.getBand(10000);
-            band7 = mEqualizer.getBand(20000);
-
+            EQ(mMediaPlayer.getAudioSessionId());
 
             mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
                 public void onCompletion(MediaPlayer mp) {
+                    mEqualizer.setEnabled(false);
                     // TODO
                     // Do something when playing is completed
                 }
@@ -114,24 +115,11 @@ public class MainActivity extends Activity {
             mMediaPlayer.setDataSource(path);
             mMediaPlayer.prepare();
             mMediaPlayer.start();
-            int sessionId = mMediaPlayer.getAudioSessionId();
-            try {
-                mEqualizer = null;
-                mEqualizer = new Equalizer(0, sessionId );
-                mEqualizer.setEnabled(true);
-            } catch (UnsupportedOperationException e) {
-                e.printStackTrace();
-            }
-            band1 = mEqualizer.getBand(40);
-            band2 = mEqualizer.getBand(100);
-            band3 = mEqualizer.getBand(200);
-            band4 = mEqualizer.getBand(2000);
-            band5 = mEqualizer.getBand(9000);
-            band6 = mEqualizer.getBand(10000);
-            band7 = mEqualizer.getBand(20000);
+            EQ(mMediaPlayer.getAudioSessionId());
 
             mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
                 public void onCompletion(MediaPlayer mp) {
+                    mEqualizer.setEnabled(false);
                     // Do something when playing is completed
                 }
             });
