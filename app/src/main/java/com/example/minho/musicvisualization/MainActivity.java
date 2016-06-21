@@ -38,6 +38,7 @@ public class MainActivity extends Activity {
 
     private MediaPlayer mMediaPlayer = new MediaPlayer();
     private Equalizer mEqualizer;
+    public static Context mContext;
 
     /** Called when the activity is first created. */
     @Override
@@ -51,7 +52,7 @@ public class MainActivity extends Activity {
         mMusicAdapter = new MusicAdapter(this);
 
         mListView.setAdapter(mMusicAdapter);
-
+        mContext = this;
         /* Listener for selecting a item */
         mListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parentView, View childView, int position, long id) {
@@ -72,20 +73,33 @@ public class MainActivity extends Activity {
         mMediaPlayer = null;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /* Release resources allocated to player */
+        mMediaPlayer.reset();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
     public void EQ(int sessionId)
     {
         mEqualizer = new Equalizer(0, sessionId);
         mEqualizer.setEnabled(true);
     }
 
-    public void getEQ()
+    public int[] getEQ()
     {
         short bands = mEqualizer.getNumberOfBands();
-
+        int[] a = new int[5];
         for (short i = 0; i < bands; i++)
         {
-            Log.w("Band",""+mEqualizer.getBandLevel(i));
+            a[i] = mEqualizer.getBandLevel(i);
         }
+        return a;
     }
 
     public void playMusic(Uri uri) {
@@ -238,7 +252,6 @@ public class MainActivity extends Activity {
                     mSingerList.add(singer);
                 }while (musicCursor.moveToNext());
             }
-            musicCursor.close();
             return;
         }
     }
