@@ -4,6 +4,7 @@ package com.example.minho.musicvisualization.renderer;
 import android.opengl.GLES20;
 import android.util.Log;
 
+import com.example.minho.musicvisualization.MainActivity;
 import com.example.minho.musicvisualization.joml.AxisAngle4f;
 import com.example.minho.musicvisualization.joml.Matrix3f;
 import com.example.minho.musicvisualization.joml.Matrix4f;
@@ -43,6 +44,7 @@ public class BasicRenderer {
 	public static int TEX_POS_NORMAL = 6;
 	public static int TEX_POS_CUBEMAP = 7;
 
+	float angle = 0;
 	protected int mWidth;
 	protected int mHeight;
 	protected double mDeltaTime;
@@ -95,7 +97,8 @@ public class BasicRenderer {
 
 		startRotQuat = new Quaternionf();
 		lastRotQuat = startRotQuat;
-		ancPts = new Vector2f(mTouchPoint);
+		ancPts = new Vector2f(0);
+		ancPts2 = new Vector2f(0);
 		isUpdateAnc = false;
 
 		mHasTexture = false;
@@ -339,28 +342,12 @@ public class BasicRenderer {
 	float[] GetWorldMatrix()
 	{
 		float[] farray = new float[4*4];
-		FloatBuffer fb = FloatBuffer.allocate(4 * 4);
+		int[] band = ((MainActivity)MainActivity.mContext).getEQ();
+		Log.w("band",""+band[0]);
 
-		ancPts.x = 0;
-		ancPts.y = 0;
-		ancPts2.x = 1;
-		ancPts2.y = 1;
-
-		// Get the vectors on the arcball
-		Vector3f va = GetArcballVector(ancPts);
-		Vector3f vb = GetArcballVector(ancPts2);
-
+		angle = angle + (float)band[0] / 10000;
 		// Get the rotation axis and the angle between the vector
-		float angle = (float)Math.acos(Math.min(1.0f, va.dot(vb))) * 2.0f;
-
-		Vector3f axisInCameraSpace = va.cross(vb).normalize();
-
-		fb.put(GetCamera().GetViewMat());
-		fb.position(0);
-		Matrix4f cameraToObjectSpace = new Matrix4f(fb).invert();
-		Vector3f axisInObjectSpace = new Matrix3f(cameraToObjectSpace).transform(axisInCameraSpace).normalize();
-
-		Quaternionf curRotQuat = new Quaternionf(new AxisAngle4f(angle, axisInObjectSpace.x, axisInObjectSpace.y, axisInObjectSpace.z));
+		Quaternionf curRotQuat = new Quaternionf(new AxisAngle4f(angle, (float)Math.sin(angle), (float)Math.cos(angle), 0));
 		lastRotQuat = curRotQuat.mul(startRotQuat).normalize();
 		Matrix4f rotationMat = new Matrix4f();
 		lastRotQuat.get(rotationMat);
