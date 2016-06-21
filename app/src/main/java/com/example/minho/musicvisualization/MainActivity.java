@@ -96,6 +96,17 @@ public class MainActivity extends Activity {
             mMediaPlayer.start();
             EQ(mMediaPlayer.getAudioSessionId());
 
+            Activity activity = SampleLauncher.getInstance().InitSampleView(ViewType.VIEW_COLOR);
+            final Intent newActivity = new Intent(getApplication(), activity.getClass());
+            newActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(newActivity);
+                }
+            }, 100);
+
             mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
                 public void onCompletion(MediaPlayer mp) {
                     mEqualizer.setEnabled(false);

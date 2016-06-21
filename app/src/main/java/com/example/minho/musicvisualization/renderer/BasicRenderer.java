@@ -401,10 +401,19 @@ public class BasicRenderer {
 		float[] worldMat = GetWorldMatrix();
 		float[] viewMat = mCamera.GetViewMat();
 		float[] projMat = mCamera.GetPerspectiveMat();
+		float[] scaleMat = new float[4*4];
+		for(int i=0;i<4*4;i++){
+			scaleMat[i]=0;
+		}
+		scaleMat[0]=2;
+		scaleMat[5]=2;
+		scaleMat[10]=2;
+		scaleMat[15]=1;
 
 		mShader.SetUniform("worldMat", worldMat);
 		mShader.SetUniform("viewMat", viewMat);
 		mShader.SetUniform("projMat", projMat);
+		mShader.SetUniform("scaleMat", scaleMat);
 		mShader.SetUniform("invTransWorldMat", GetInverseTranspose(worldMat));
 		mShader.SetUniform("s_tex0", 0);
 		mShader.SetUniform("s_texNor", TEX_POS_NORMAL);

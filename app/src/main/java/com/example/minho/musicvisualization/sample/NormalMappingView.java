@@ -12,16 +12,16 @@ public class NormalMappingView extends SampleView {
 	@Override
 	public void OnInit()
 	{
-		String fs = FileLoader.ReadTxtFile(this, "shader/view_nor/nor.fs");
-		String vs = FileLoader.ReadTxtFile(this, "shader/view_nor/nor.vs");
+		String fs = FileLoader.ReadTxtFile(this, "shader/view/color.fs");
+		String vs = FileLoader.ReadTxtFile(this, "shader/view/color.vs");
 		mRenderer.SetProgram(vs, fs);
 
-		InputStream teapot = FileLoader.GetStream(this, "obj3d/teapot");
+		InputStream teapot = FileLoader.GetStream(this, "obj3d/dummy_obj.obj");
 
 		TexData[] textJ = new TexData[1];
 		TexData[] normal_texJ = new TexData[1];
-		textJ[0] = FileLoader.ReadTexture(this, R.drawable.light_bokeh_texture_50);
-		normal_texJ[0] = FileLoader.ReadTexture(this, R.drawable.light_bokeh_texture_61);
+		textJ[0] = FileLoader.ReadTexture(this, R.drawable.tex_c_brick);
+		normal_texJ[0] = FileLoader.ReadTexture(this, R.drawable.tex_n_brick);
 
 		mRenderer.SetNewModel(teapot);
 		mRenderer.SetTexture(TexData.Type.TEXDATA_GENERAL, textJ);

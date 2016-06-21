@@ -10,16 +10,17 @@ public class ColoringView extends SampleView {
 	@Override
 	public void OnInit()
 	{
-		String vs = FileLoader.ReadTxtFile(this, "shader/view_color/color.vs");
-		String fs = FileLoader.ReadTxtFile(this, "shader/view_color/color.fs");
+		String vs = FileLoader.ReadTxtFile(this, "shader/view/color.vs");
+		String fs = FileLoader.ReadTxtFile(this, "shader/view/color.fs");
 		mRenderer.SetProgram(vs, fs);
 
-		InputStream teapot = FileLoader.GetStream(this, "obj3d/teapot");
+		InputStream chair = FileLoader.GetStream(this, "obj3d/chair.obj");
 
 	//	TexData[] textJ = new TexData[1];
 	//	textJ[0] = FileLoader.ReadTexture(this, R.drawable.tex_c_brick);
 
-		mRenderer.SetNewModel(teapot);
+		mRenderer.SetNewModel(chair);
+
 	//	mRenderer.SetTexture(TexData.Type.TEXDATA_GENERAL, textJ);
 
 		mRenderer.Initialize();

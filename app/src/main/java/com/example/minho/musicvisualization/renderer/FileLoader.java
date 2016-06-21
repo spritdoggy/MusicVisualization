@@ -24,6 +24,8 @@ public class FileLoader {
 
 	public static TexData ReadTexture(Context c, int resId)
 	{
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
 		Bitmap tex = BitmapFactory.decodeResource(c.getResources(), resId);
 		ByteBuffer buffer = ByteBuffer.allocateDirect(tex.getByteCount()).order(ByteOrder.nativeOrder());
 		tex.copyPixelsToBuffer(buffer);
