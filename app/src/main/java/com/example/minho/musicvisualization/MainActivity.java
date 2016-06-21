@@ -63,15 +63,6 @@ public class MainActivity extends Activity {
         });
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        /* Release resources allocated to player */
-        mMediaPlayer.reset();
-        mMediaPlayer.release();
-        mMediaPlayer = null;
-    }
-
     public void EQ(int sessionId)
     {
         mEqualizer = new Equalizer(0, sessionId);
@@ -238,7 +229,6 @@ public class MainActivity extends Activity {
                     mSingerList.add(singer);
                 }while (musicCursor.moveToNext());
             }
-            musicCursor.close();
             return;
         }
     }
@@ -304,5 +294,26 @@ public class MainActivity extends Activity {
             }
         }
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMediaPlayer.reset();
+        mMediaPlayer.release();
+        mMediaPlayer = null;
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /* Release resources allocated to player */
+        mMediaPlayer.reset();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 }

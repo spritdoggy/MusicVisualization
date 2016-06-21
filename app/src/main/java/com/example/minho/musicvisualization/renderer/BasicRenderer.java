@@ -95,7 +95,8 @@ public class BasicRenderer {
 
 		startRotQuat = new Quaternionf();
 		lastRotQuat = startRotQuat;
-		ancPts = new Vector2f(mTouchPoint);
+		ancPts = new Vector2f(0);
+		ancPts2 = new Vector2f(0);
 		isUpdateAnc = false;
 
 		mHasTexture = false;
