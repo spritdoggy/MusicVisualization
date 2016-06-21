@@ -59,6 +59,7 @@ public class BasicRenderer {
 	static Quaternionf startRotQuat;
 	static Quaternionf lastRotQuat;
 	static Vector2f ancPts;
+	static Vector2f ancPts2;
 	static boolean isUpdateAnc;
 
 	// vertex buffer
@@ -340,42 +341,27 @@ public class BasicRenderer {
 		float[] farray = new float[4*4];
 		FloatBuffer fb = FloatBuffer.allocate(4 * 4);
 
-		if (mIsTouchOn)
-		{
-			if (!isUpdateAnc)
-			{
-				ancPts.set(mTouchPoint);
-				isUpdateAnc = true;
-				Log.i(TAG, "Anchor Updated\n");
-			}
-			else
-			{
-				if (ancPts.x != mTouchPoint.x || ancPts.y != mTouchPoint.y)
-				{
-					// Get the vectors on the arcball
-					Vector3f va = GetArcballVector(ancPts);
-					Vector3f vb = GetArcballVector(mTouchPoint);
+		ancPts.x = 0;
+		ancPts.y = 0;
+		ancPts2.x = 1;
+		ancPts2.y = 1;
 
-					// Get the rotation axis and the angle between the vector
-					float angle = (float)Math.acos(Math.min(1.0f, va.dot(vb))) * 2.0f;
+		// Get the vectors on the arcball
+		Vector3f va = GetArcballVector(ancPts);
+		Vector3f vb = GetArcballVector(ancPts2);
 
-					Vector3f axisInCameraSpace = va.cross(vb).normalize();
+		// Get the rotation axis and the angle between the vector
+		float angle = (float)Math.acos(Math.min(1.0f, va.dot(vb))) * 2.0f;
 
-					fb.put(GetCamera().GetViewMat());
-					fb.position(0);
-					Matrix4f cameraToObjectSpace = new Matrix4f(fb).invert();
-					Vector3f axisInObjectSpace = new Matrix3f(cameraToObjectSpace).transform(axisInCameraSpace).normalize();
+		Vector3f axisInCameraSpace = va.cross(vb).normalize();
 
-					Quaternionf curRotQuat = new Quaternionf(new AxisAngle4f(angle, axisInObjectSpace.x, axisInObjectSpace.y, axisInObjectSpace.z));
-					lastRotQuat = curRotQuat.mul(startRotQuat).normalize();
-				}
-			}
-		}
-		else
-		{
-			startRotQuat = lastRotQuat;
-			isUpdateAnc = false;
-		}
+		fb.put(GetCamera().GetViewMat());
+		fb.position(0);
+		Matrix4f cameraToObjectSpace = new Matrix4f(fb).invert();
+		Vector3f axisInObjectSpace = new Matrix3f(cameraToObjectSpace).transform(axisInCameraSpace).normalize();
+
+		Quaternionf curRotQuat = new Quaternionf(new AxisAngle4f(angle, axisInObjectSpace.x, axisInObjectSpace.y, axisInObjectSpace.z));
+		lastRotQuat = curRotQuat.mul(startRotQuat).normalize();
 		Matrix4f rotationMat = new Matrix4f();
 		lastRotQuat.get(rotationMat);
 		rotationMat.get(farray);
@@ -409,6 +395,8 @@ public class BasicRenderer {
 		scaleMat[5]=2;
 		scaleMat[10]=2;
 		scaleMat[15]=1;
+
+
 
 		mShader.SetUniform("worldMat", worldMat);
 		mShader.SetUniform("viewMat", viewMat);
